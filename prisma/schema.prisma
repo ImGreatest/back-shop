@@ -1,0 +1,107 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id String @id @default(uuid())
+  name String
+  createdAt        DateTime     @default(now()) @db.Timestamptz(3)
+  updatedAt        DateTime     @updatedAt @db.Timestamptz(3)
+  deletedAt        DateTime? @db.Timestamptz(3)
+}
+
+enum EProductStatus {
+  stock // в наличии
+  absent // отсутствует
+}
+
+model Product {
+  id String @id @default(uuid())
+  name String
+  description String?
+  price Float
+  status EProductStatus @default(absent)
+  createdAt        DateTime     @default(now()) @db.Timestamptz(3)
+  updatedAt        DateTime     @updatedAt @db.Timestamptz(3)
+  deletedAt        DateTime? @db.Timestamptz(3)
+
+  userProducts UserProduct[]
+  // orderProducts OrderProduct[]
+}
+
+enum ERoleUser {
+  admin
+  seller
+  client
+}
+
+model User {
+  id String @id @default(uuid())
+  fullname String
+  role ERoleUser @default(client)
+  login String
+  password String
+  createdAt        DateTime     @default(now()) @db.Timestamptz(3)
+  updatedAt        DateTime     @updatedAt @db.Timestamptz(3)
+  deletedAt        DateTime? @db.Timestamptz(3)
+
+  userProducts UserProduct[]
+  // userOrder UserOrder[]
+}
+
+model UserProduct {
+  userId String
+  user User @relation(fields: [userId], references: [id])
+  productId String
+  product Product @relation(fields: [productId], references: [id])
+  @@id([userId, productId])
+}
+
+// enum EOrderStatus {
+//   pending // в ожидании (оплаты)
+//   paid // оплачен
+//   proccesing // в обработке
+//   onTheWay // в пути
+//   deliveried // доставлен
+//   completed // завершен
+//   canceled // отменен
+// }
+//
+// model Order {
+//   id String @id @default(uuid())
+//   price Int
+//   status EOrderStatus @default(pending)
+//   createdAt        DateTime     @default(now()) @db.Timestamptz(3)
+//   updatedAt        DateTime     @updatedAt @db.Timestamptz(3)
+//   deletedAt        DateTime? @db.Timestamptz(3)
+//
+//   orderProducts OrderProduct[]
+//   userOrder UserOrder[]
+// }
+//
+// model OrderProduct {
+//   orderId String
+//   order Order @relation(fields: [orderId], references: [id])
+//   productId String
+//   product Product @relation(fields: [productId], references: [id])
+//   @@id([orderId, productId])
+// }
+//
+// model UserOrder {
+//   userId String
+//   user User @relation(fields: [userId], references: [id])
+//   orderId String
+//   order Order @relation(fields: [orderId], references: [id])
+//   @@id([userId, orderId])
+// }
