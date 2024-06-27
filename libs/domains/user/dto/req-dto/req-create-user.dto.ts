@@ -18,4 +18,8 @@ export class ReqCreateUserDto {
 	@ApiProperty({ example: '123' })
 	@IsString()
 	password: string;
+
+	@ApiProperty({ example: 'phone' })
+	@IsString()
+	phone: string;
 }
