@@ -36,6 +36,20 @@ export class UserAdapter extends UserRepository {
         return this.prisma.user.findMany();
     }
 
+    async getUserByLoginPass(login: string, password: string): Promise<ResUserDto> {
+        const user = await this.prisma.user.findFirst({
+            where: {
+                login: login,
+            },
+        });
+
+        if (!user || !this.cryptoService.compareHash(password, user.password)) {
+            throw new Error('User not found!');
+        }
+
+        return user;
+    }
+
     async updateUser(user_id: string, data: ReqUpdateUserDto): Promise<void> {
         await this.prisma.user.update({
             where: {

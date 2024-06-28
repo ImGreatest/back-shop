@@ -11,6 +11,8 @@ export abstract class UserRepository {
 
 	abstract getUsers(): Promise<ResUserDto[]>;
 
+	abstract getUserByLoginPass(login: string, password: string): Promise<ResUserDto>;
+
 	abstract updateUser(user_id: string, data: ReqUpdateUserDto): Promise<void>;
 
 	abstract deleteUser(user_id: string): Promise<void>;

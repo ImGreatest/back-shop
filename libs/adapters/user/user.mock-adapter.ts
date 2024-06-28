@@ -19,6 +19,10 @@ export class UserMockAdapter extends UserRepository {
 		throw new Error();
 	}
 
+	async getUserByLoginPass(login: string, password: string): Promise<ResUserDto> {
+		throw new Error(`${login}, ${password}`);
+	}
+
 	async updateUser(user_id: string, data: ReqUpdateUserDto): Promise<void> {
 		throw new Error(`${user_id}, ${{ ...data }}`);
 	}
