@@ -20,6 +20,10 @@ export class UserService {
 		return this.userRep.getUsers();
 	}
 
+	getUserByLoginPass(login: string, password: string): Promise<ResUserDto> {
+		return this.userRep.getUserByLoginPass(login, password);
+	}
+
 	updateUser(user_id: string, data: ReqUpdateUserDto): Promise<void> {
 		return this.userRep.updateUser(user_id, data);
 	}

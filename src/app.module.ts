@@ -1,13 +1,23 @@
 import { Module } from '@nestjs/common';
-import { AppService } from './app.service';
 import { PrismaModule } from "../libs/services/prisma/prisma.module";
-import { ControllersModule } from "./controllers/controllers.module";
+import { UserControllerModule } from "./controllers/user/user-controller.module";
+import { CategoryControllerModule } from "./controllers/category/category-controller.module";
+import { ProductControllerModule } from "./controllers/product/product-controller.module";
+import { SizesControllerModule } from "./controllers/sizes/sizes-controller.module";
+import { CategoryProductControllerModule } from "./controllers/category-product/category-product-controller.module";
+import { ProductSizeControllerModule } from "./controllers/product-size/product-size-controller.module";
+import { UserBucketControllerModule } from "./controllers/user-bucket/user-bucket-controller.module";
 
 @Module({
   imports: [
     PrismaModule,
-    ControllersModule
+		UserControllerModule,
+		CategoryControllerModule,
+	  ProductControllerModule,
+	  SizesControllerModule,
+	  CategoryProductControllerModule,
+	  ProductSizeControllerModule,
+	  UserBucketControllerModule,
   ],
-  providers: [AppService],
 })
 export class AppModule {}

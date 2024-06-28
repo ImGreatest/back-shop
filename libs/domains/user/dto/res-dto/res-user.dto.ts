@@ -17,6 +17,9 @@ export class ResUserDto {
 	@IsString()
 	password: string;
 
+	@IsString()
+	phone: string;
+
 	@IsDate()
 	createdAt?: Date;
 

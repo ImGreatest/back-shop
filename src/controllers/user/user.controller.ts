@@ -26,6 +26,14 @@ export class UserController {
 		return this.userService.getUsers();
 	}
 
+	@Get('check-user/:login/:password')
+	getUserByLoginPass(
+		@Param('login') login: string,
+		@Param('password') password: string
+	): Promise<ResUserDto> {
+		return this.userService.getUserByLoginPass(login, password);
+	}
+
 	@Put('update-user/:id')
 	@ApiBody({ type: ReqUpdateUserDto })
 	updateUser(

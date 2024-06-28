@@ -19,11 +19,8 @@ model Category {
   createdAt        DateTime     @default(now()) @db.Timestamptz(3)
   updatedAt        DateTime     @updatedAt @db.Timestamptz(3)
   deletedAt        DateTime? @db.Timestamptz(3)
-}
 
-enum EProductStatus {
-  stock // в наличии
-  absent // отсутствует
+  categoryProducs CategoryProduct[]
 }
 
 model Product {
@@ -31,18 +28,38 @@ model Product {
   name String
   description String?
   price Float
-  status EProductStatus @default(absent)
+  count Int
   createdAt        DateTime     @default(now()) @db.Timestamptz(3)
   updatedAt        DateTime     @updatedAt @db.Timestamptz(3)
   deletedAt        DateTime? @db.Timestamptz(3)
 
-  userProducts UserProduct[]
-  // orderProducts OrderProduct[]
+  userBucket UserBucket[]
+  categoryProducs CategoryProduct[]
+  productSizes ProductSize[]
+}
+
+model Sizes {
+  id String @id @default(uuid())
+  name String
+  createdAt        DateTime     @default(now()) @db.Timestamptz(3)
+  updatedAt        DateTime     @updatedAt @db.Timestamptz(3)
+  deletedAt        DateTime? @db.Timestamptz(3)
+
+  productSizes ProductSize[]
+}
+
+model ProductSize {
+  productId String
+  product Product @relation(fields: [productId], references: [id])
+  sizeId String
+  size Sizes @relation(fields: [sizeId], references: [id])
+  availability Boolean
+  @@id([productId, sizeId])
 }
 
 enum ERoleUser {
   admin
-  seller
+  manager
   client
 }
 
@@ -52,56 +69,40 @@ model User {
   role ERoleUser @default(client)
   login String
   password String
+  phone String
   createdAt        DateTime     @default(now()) @db.Timestamptz(3)
   updatedAt        DateTime     @updatedAt @db.Timestamptz(3)
   deletedAt        DateTime? @db.Timestamptz(3)
 
-  userProducts UserProduct[]
-  // userOrder UserOrder[]
+  userBucket UserBucket[]
+  refreshToken RefreshToken[]
 }
 
-model UserProduct {
+
+model RefreshToken {
+  token       String
+  deviceId    String
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String      @db.VarChar()
+  created_at  DateTime @default(now())
+  expieres_at DateTime
+
+  @@id([token, deviceId])
+}
+
+model UserBucket {
   userId String
   user User @relation(fields: [userId], references: [id])
   productId String
   product Product @relation(fields: [productId], references: [id])
+  count Int
   @@id([userId, productId])
 }
 
-// enum EOrderStatus {
-//   pending // в ожидании (оплаты)
-//   paid // оплачен
-//   proccesing // в обработке
-//   onTheWay // в пути
-//   deliveried // доставлен
-//   completed // завершен
-//   canceled // отменен
-// }
-//
-// model Order {
-//   id String @id @default(uuid())
-//   price Int
-//   status EOrderStatus @default(pending)
-//   createdAt        DateTime     @default(now()) @db.Timestamptz(3)
-//   updatedAt        DateTime     @updatedAt @db.Timestamptz(3)
-//   deletedAt        DateTime? @db.Timestamptz(3)
-//
-//   orderProducts OrderProduct[]
-//   userOrder UserOrder[]
-// }
-//
-// model OrderProduct {
-//   orderId String
-//   order Order @relation(fields: [orderId], references: [id])
-//   productId String
-//   product Product @relation(fields: [productId], references: [id])
-//   @@id([orderId, productId])
-// }
-//
-// model UserOrder {
-//   userId String
-//   user User @relation(fields: [userId], references: [id])
-//   orderId String
-//   order Order @relation(fields: [orderId], references: [id])
-//   @@id([userId, orderId])
-// }
+model CategoryProduct {
+  categoryId String
+  category Category @relation(fields: [categoryId], references: [id])
+  productId String
+  product Product @relation(fields: [productId], references: [id])
+  @@id([categoryId, productId])
+}
